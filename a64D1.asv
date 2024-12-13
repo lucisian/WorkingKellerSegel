@@ -19,7 +19,7 @@ D=1;
 p0=2*(a+D+2*sqrt(a*D));
 p2=1;
 p4=1;
-epsilon=-0.0001;
+epsilon=0.01;
 p=p0+epsilon*epsilon*p2+epsilon*epsilon*epsilon*epsilon*p4;
 
 %Domain length
@@ -59,9 +59,6 @@ vi=N+1:2*N;
 f=@(u,v)u.*(1-u);
 g=@(u,v)u-a*v;
 
-%TODO: WRITE THE BELOW FOR A GENERAL SENSITIVITY FUNCTION AND BE SURE WHAT
-%SENSITIVITY YOU ARE USING!!!!!!
-
 if(dims==1)
     %1D Laplacian
     Lap = (1/dx)^2*Lap;
@@ -93,8 +90,7 @@ odeOptions=odeset('JPattern',JacSparse);%,'RelTol',1e-5,'AbsTol',1e-5,'maxstep',
 P=U(end,ui);
 close all;
 
-%Third order coefficient - supercritical when positive, subcritical when
-%engative
+%Third order coefficient - 
 C3 = (9*a-67*sqrt(a*D)-16*D)/72
 
 if(dims==1)
