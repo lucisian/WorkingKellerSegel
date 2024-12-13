@@ -1,6 +1,7 @@
 clear
 %set the number of dimensions
 
+
 dims=1;
 %number of gridpoints per dimension
 
