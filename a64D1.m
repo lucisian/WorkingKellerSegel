@@ -19,7 +19,7 @@ D=1;
 p0=2*(a+D+2*sqrt(a*D));
 p2=1;
 p4=1;
-epsilon=-0.0001;
+epsilon=1;
 p=p0+epsilon*epsilon*p2+epsilon*epsilon*epsilon*epsilon*p4;
 
 %Domain length
@@ -66,8 +66,9 @@ if(dims==1)
     %1D Laplacian
     Lap = (1/dx)^2*Lap;
     Adv=(1/(2*dx))*Adv;
+    chi = @(U)U./(1+U.^(2));
     F = @(t,U)[f(U(ui),U(vi)) + Lap*U(ui) -...
-    p*(U(ui).*(Lap*U(vi)) + (Adv*U(ui)).*(Adv*U(vi)));
+    p*(chi(U(ui)).*(Lap*U(vi)) + (Adv*(chi(U(ui)))).*(Adv*U(vi)));
     g(U(ui),U(vi)) + D*Lap*U(vi)];
 elseif(dims==2)
     %2d Laplacian
@@ -95,7 +96,7 @@ close all;
 
 %Third order coefficient - supercritical when positive, subcritical when
 %engative
-C3 = (9*a-67*sqrt(a*D)-16*D)/72
+C3 = (9*a-67*sqrt(a*D)-16*D)/72;
 
 if(dims==1)
     plot(x,U(end,ui),'linewidth',2); hold on
@@ -117,9 +118,13 @@ if(dims==1)
     plot(x,w,'y--','linewidth',2)
 
     hold on
-       
-    A05=1.14731;
-    wu=1-10273*A05^(4)*epsilon^(4)/(35424)+647*A05^(2)*epsilon^(4)*p2/(13284) +(A05*epsilon-A05^(3)*epsilon^(3)/1944 +A05*epsilon^(3)*p2/1458)*cos(k*x)+(-7*A05^(2)*epsilon^(2)/12 +99723053*A05^(4)*epsilon^(4)/81616896 -641*A05^(2)*epsilon^(4)*p2/956448)*cos(2*k*x) -(1343*A05^(3)*epsilon^(3)/12288)*cos(3*k*x)+(135229*A05^(4)*epsilon^(4)/2764800)*cos(4*k*x);
+    
+    A0=0.386061;
+    wu=1-A0^(2)*epsilon^(2)/2 +647*A0^(2)*epsilon^(4)/13284 -10273*A0^(4)*epsilon^(4)/35424 ...
+    +(A0*epsilon +A0*epsilon^(3)/1458 -A0^(3)*epsilon^(3)/1944)*cos(k*x) ...
+    +(-A0^(2)*epsilon^(2)/12 -641*A0^(2)*epsilon^(4)/956448 +99723053*A0^(4)*epsilon^(4)/81616896)*cos(2*k*x) ...
+    +(-1343*A0^(3)*epsilon^(3)/12288)*cos(3*k*x) ...
+    +(135229*A0^(4)*epsilon^(4)/2764800)*cos(4*k*x);
     plot(x,wu)
 
     hold off
