@@ -14,12 +14,12 @@ N=m^2;
 end
 
 %parameters in the reaction kinematics
-a=64;
+a=144;
 D=1;
-p0=2*(a+D+2*sqrt(a*D));
+p0=(a+D+2*sqrt(a*D));
 p2=1;
 p4=1;
-epsilon=0.3;
+epsilon=0.1;
 p=p0+epsilon*epsilon*p2+epsilon*epsilon*epsilon*epsilon*p4;
 
 %Domain length
@@ -39,12 +39,6 @@ e=ones(m,1);
 Lap=spdiags([e,-2*e,e],[1,0,-1],m,m);
 Adv=spdiags([e,-e],[1,-1],m,m);
 
-%periodic boundary conditions
-%Lap(1,end)=1;
-%Lap(end,1)=1;
-%Adv(1,end)=-1;
-%Adv(end,1)=1;
-
 %Neumann
 Lap(1,1)=-1;
 Lap(end,end)=-1;
@@ -59,16 +53,13 @@ vi=N+1:2*N;
 f=@(u,v)u.*(1-u);
 g=@(u,v)u-a*v;
 
-%TODO: WRITE THE BELOW FOR A GENERAL SENSITIVITY FUNCTION AND BE SURE WHAT
-%SENSITIVITY YOU ARE USING!!!!!!
-
 if(dims==1)
     %1D Laplacian
     Lap = (1/dx)^2*Lap;
     Adv=(1/(2*dx))*Adv;
-    chi = @(U)U./(1+U.^(2));
+    %chi = @(U)U./(1+U.^(2));
     F = @(t,U)[f(U(ui),U(vi)) + Lap*U(ui) -...
-    p*(chi(U(ui)).*(Lap*U(vi)) + (Adv*(chi(U(ui)))).*(Adv*U(vi)));
+    p*(U(ui).*(Lap*U(vi)) + (Adv*(U(ui))).*(Adv*U(vi)));
     g(U(ui),U(vi)) + D*Lap*U(vi)];
 elseif(dims==2)
     %2d Laplacian
@@ -102,30 +93,17 @@ if(dims==1)
     plot(x,U(end,ui),'linewidth',2); hold on
 
     set(gca,'fontsize',24);
- 
-    hold on
-
-    k=sqrt(sqrt(a/D));
-
-    A03=-6*sqrt((sqrt(a)*p2/((sqrt(a)+sqrt(D))*(9*a-67*sqrt(a*D)-16*D))));
-
-    w0=1;
-    w11=1;
-    w22=(-(a+4*sqrt(a*D)))/(18*a*sqrt(D));
-    w20=-1/2;
-    w=w0+epsilon*A03*w11*cos(k*x) +epsilon*epsilon*w22*A03*A03*cos(2*k*x) +epsilon*epsilon*w20*A03*A03;
-
-    plot(x,w,'y--','linewidth',2)
 
     hold on
     
-    A0=-0.386061;
-    wu=1-A0^(2)*epsilon^(2)/2 +647*A0^(2)*epsilon^(4)/13284 -10273*A0^(4)*epsilon^(4)/35424 ...
-    +(A0*epsilon +A0*epsilon^(3)/1458 -A0^(3)*epsilon^(3)/1944)*cos(k*x) ...
-    +(-A0^(2)*epsilon^(2)/12 -641*A0^(2)*epsilon^(4)/956448 +99723053*A0^(4)*epsilon^(4)/81616896)*cos(2*k*x) ...
-    +(-1343*A0^(3)*epsilon^(3)/12288)*cos(3*k*x) ...
-    +(135229*A0^(4)*epsilon^(4)/2764800)*cos(4*k*x);
-    plot(x,wu)
+    k=sqrt(sqrt(a/D));
+    A0=-1.01751;
+    wu=1-A0^(2)*epsilon^(2)/2 +2027*A0^(2)*epsilon^(4)/28730 -23297*A0^(4)*epsilon^(4)/12888720 ...
+        +(A0*epsilon +A0*epsilon^(3)/2210 +37*A0^(3)*epsilon^(3)/236720)*cos(k*x)...
+        +(50*A0^(2)*epsilon^(2)/27 +954883*A0^(2)*epsilon^(4)/41888340 -20377519009*A0^(4)*epsilon^(4)/11135854080)*cos(2*k*x)...
+        +(140525*A0^(3)*epsilon^(3)/55296)*cos(3*k*x)...
+        +(137709271*A0^(4)*epsilon^(4)/40310784)*cos(4*k*x);
+    plot(x,wu,'--','linewidth',2)
 
     hold off
 
