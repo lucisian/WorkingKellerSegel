@@ -5,7 +5,7 @@ a=144;
 D=1;
 p2=1;
 p4=1;
-epsilon=0.1;
+epsilon=0.9;
 
 %load the parameters from the parameters.m script
 run('parameters.m')
@@ -72,20 +72,23 @@ close all;
 C3 = (9*a-67*sqrt(a*D)-16*D)/72;
 
 if(dims==1)
-    plot(x,U(end,ui),'linewidth',2); hold on
+    plot(x,U(end,ui),'linewidth',2);
+    axis tight
+    hold on
 
     set(gca,'fontsize',24);
 
     hold on
     
     k=sqrt(sqrt(a/D));
-    A0=-1.01751;
+    A0=-0.336467;
     wu=1-A0^(2)*epsilon^(2)/2 +2027*A0^(2)*epsilon^(4)/28730 -23297*A0^(4)*epsilon^(4)/12888720 ...
         +(A0*epsilon +A0*epsilon^(3)/2210 +37*A0^(3)*epsilon^(3)/236720)*cos(k*x)...
         +(50*A0^(2)*epsilon^(2)/27 +954883*A0^(2)*epsilon^(4)/41888340 -20377519009*A0^(4)*epsilon^(4)/11135854080)*cos(2*k*x)...
         +(140525*A0^(3)*epsilon^(3)/55296)*cos(3*k*x)...
         +(137709271*A0^(4)*epsilon^(4)/40310784)*cos(4*k*x);
     plot(x,wu,'--','linewidth',2)
+    axis tight
 
     hold off
 

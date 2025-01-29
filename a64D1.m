@@ -1,38 +1,15 @@
 clear
 %set the number of dimensions
 
-dims=1;
-%number of gridpoints per dimension
-
-m=4000;
-%Total number of gridpoints; varies by dimension as:
-%2D make N=m^2; 1D make N=m;
-if(dims==1)
-N=m;
-elseif(dims==2)
-N=m^2;
-end
-
 %parameters in the reaction kinematics
-a=64;
+a=81;
 D=1;
-p0=2*(a+D+2*sqrt(a*D));
 p2=1;
 p4=1;
 epsilon=0.3;
-p=p0+epsilon*epsilon*p2+epsilon*epsilon*epsilon*epsilon*p4;
 
-%Domain length
-L=3*2*pi*sqrt(sqrt(D/a));
-
-%Spatial step size
-dx=L/(m-1);
-
-%Time interval to solve the equations on
-T=linspace(0,10000,100);
-
-%Spatial domain (needed for plotting only)
-x=linspace(0,L,m);
+%load the parameters from the parameters.m script
+run('parameters2.m')
 
 % (Sparse) Laplacian matrix
 e=ones(m,1);
@@ -111,21 +88,21 @@ if(dims==1)
 
     w0=1;
     w11=1;
-    w22=(-(a+4*sqrt(a*D)))/(18*a*sqrt(D));
+    w22=(-(a+4*sqrt(a*D)))/(18*a);
     w20=-1/2;
     w=w0+epsilon*A03*w11*cos(k*x) +epsilon*epsilon*w22*A03*A03*cos(2*k*x) +epsilon*epsilon*w20*A03*A03;
 
-    plot(x,w,'y--','linewidth',2)
+    plot(x,w,'--','linewidth',2)
 
     hold on
     
-    A0=-0.386061;
-    wu=1-A0^(2)*epsilon^(2)/2 +647*A0^(2)*epsilon^(4)/13284 -10273*A0^(4)*epsilon^(4)/35424 ...
-    +(A0*epsilon +A0*epsilon^(3)/1458 -A0^(3)*epsilon^(3)/1944)*cos(k*x) ...
-    +(-A0^(2)*epsilon^(2)/12 -641*A0^(2)*epsilon^(4)/956448 +99723053*A0^(4)*epsilon^(4)/81616896)*cos(2*k*x) ...
-    +(-1343*A0^(3)*epsilon^(3)/12288)*cos(3*k*x) ...
-    +(135229*A0^(4)*epsilon^(4)/2764800)*cos(4*k*x);
-    plot(x,wu)
+    A0=-0.453859;
+    wu=1-A0^(2)*epsilon^(2)/2 -267925*A0^(4)*epsilon^(4)/662661 +899*A0^(2)*epsilon^(5)/20200 ...
+    +(A0*epsilon -55*A0^(3)*epsilon^(3)/32724 +A0*epsilon^(4)/2020)*cos(k*x) ...
+    +(-13*A0^(2)*epsilon^(2)/162 +8956342085*A0^(4)*epsilon^(4)/6870469248 -79109*A0^(2)*epsilon^(5)/132532200)*cos(2*k*x) ...
+    +(-1189*A0^(3)*epsilon^(3)/10368)*cos(3*k*x) ...
+    +(3385445*A0^(4)*epsilon^(4)/68024448)*cos(4*k*x);
+    plot(x,wu,'--','linewidth',2)
 
     hold off
 

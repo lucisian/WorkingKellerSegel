@@ -6,7 +6,7 @@ a=16;
 D=1;
 p2=1;
 p4=1;
-epsilon=0.1;
+epsilon=0.9;
 
 %load the parameters from the parameters.m script
 run('parameters.m')
