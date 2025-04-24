@@ -1,0 +1,25 @@
+function fnPlotDominantFrequency(U, ui, T, m)
+    fs = m;
+    Nl = m;
+    freq = 0:fs/Nl:fs/2;
+    dominant_freq = zeros(length(T),1);
+
+    for i = 1:length(T)
+        u = U(i, ui);
+        u = u - mean(u);
+        xdft = fft(u);
+        xdft = xdft(1:Nl/2+1);
+        psdx = (1/(fs*Nl)) * abs(xdft).^2;
+        psdx(2:end-1) = 2*psdx(2:end-1);
+        [~, idx] = max(psdx);
+        dominant_freq(i) = freq(idx);
+    end
+
+    figure;
+    plot(T, 2*dominant_freq, 'LineWidth', 2);
+    xlabel('t');
+    ylabel('Dominant Frequency');
+    title('Dominant Spatial Frequency Over Time');
+    set(gca, 'FontSize', 12);
+    grid on;
+end
